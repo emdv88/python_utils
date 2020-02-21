@@ -1,5 +1,4 @@
-from typing import Optional, Set
-
+from typing import Optional, Set, Callable
 
 """
 A basic Tree Node class:
@@ -16,7 +15,19 @@ class Node:
             self.parent.children.add(self)
 
         for name, value in kwargs.items():
-            setattr(self, name, value)
+            if not hasattr(self, name):
+                setattr(self, name, value)
+
+    @property
+    def level(self):
+
+        level = 0
+        node = self
+        while node.parent is not None:
+            level += 1
+            node = node.parent
+
+        return level
 
 """
 Iterate over the tree structure with pre-order strategy:
@@ -24,9 +35,11 @@ first the root, then all it's children
 """
 class PreOrderIter:
 
-    def __init__(self, root_node: Node):
+    def __init__(self, root_node: Node, filter: Callable=None):
         self.root_node = root_node
         self.current_node = root_node
+
+        self.filter = filter
 
         self.iterated = set()
 
@@ -49,6 +62,7 @@ class PreOrderIter:
 
             # add the first child node that we have not returned yet
             for child_node in source_node.children.difference(self.iterated):
+
                 next = child_node
                 self.iterated.add(child_node)
                 break
@@ -59,5 +73,11 @@ class PreOrderIter:
             else:
                 source_node = None
 
+        # prepare for the next round
         self.current_node = next
-        return result
+
+        # skip entries don't pass the filter
+        if self.filter is None or self.filter(result):
+            return result
+        else:
+            return self.__next__()
