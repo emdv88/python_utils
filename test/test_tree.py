@@ -18,6 +18,7 @@ class TestTree(unittest.TestCase):
 
         result_list = [node.name for node in PreOrderIter(f)]
 
+        # since the children are stored in sets, the result my vary
         possible_results = [
             ['f', 'b', 'a', 'd', 'c', 'e', 'g', 'i', 'h'],
             ['f', 'b', 'a', 'd', 'e', 'c', 'g', 'i', 'h'],
@@ -29,6 +30,7 @@ class TestTree(unittest.TestCase):
             ['f', 'g', 'i', 'h', 'b', 'd', 'e', 'c', 'a'],
         ]
 
+        # pass the test if one of the possible results is received
         found = False
         for expected_result in possible_results:
             try:
