@@ -24,7 +24,7 @@ class Node:
         level = 0
         node = self
         while node.parent is not None:
-            level += 3
+            level += 1
             node = node.parent
 
         return level
